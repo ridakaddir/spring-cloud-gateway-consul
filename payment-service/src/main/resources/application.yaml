@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: payment-service
+  cloud:
+    consul:
+      discovery:
+        prefer-ip-address: true
+        instanceId: ${spring.application.name}:${random.value}
+server:
+  port: 0

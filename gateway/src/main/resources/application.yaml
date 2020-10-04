@@ -1,0 +1,33 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    consul:
+      discovery:
+        prefer-ip-address: true
+        instance-id: ${spring.application.name}:${random.value}
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+      - id: purchase-service-route
+        uri: lb://PURCHASE-SERVICE
+        predicates:
+        - Path=/foo/**
+        filters:
+          - RewritePath=/foo/(?<segment>.*), /$\{segment}
+      - id: purchase-v2-service-route
+        uri: lb://PURCHASE-SERVICE
+        predicates:
+          - Path=/purchase/**
+        filters:
+          - RewritePath=/purchase/(?<segment>.*), /$\{segment}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
